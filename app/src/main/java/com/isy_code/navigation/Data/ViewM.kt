@@ -5,8 +5,11 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.cancel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -25,7 +28,7 @@ class ViewM : ViewModel() {
         getData()
     }
 
-    public fun getData(){
+    fun getData(){
         val retrofit = Retrofit.Builder()
             .baseUrl("https://inshorts.deta.dev/")
             .addConverterFactory(GsonConverterFactory.create())

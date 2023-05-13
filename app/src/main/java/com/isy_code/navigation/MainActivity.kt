@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity(){
         setContent {
             val result by viewmodel.resultat.observeAsState()
             val navController = rememberNavController()
-            SetupNavGraph(navController = navController,result?: arrayListOf(), onRefreshAction = {viewmodel.getData()})
+            SetupNavGraph(navController = navController,result?: arrayListOf(),viewmodel)
             //Scaffold1(result?: arrayListOf(), onRefreshAction = { viewmodel.getData() })
         }
 

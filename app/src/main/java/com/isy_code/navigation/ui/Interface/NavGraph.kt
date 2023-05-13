@@ -6,17 +6,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.isy_code.navigation.Data.New
 import com.isy_code.navigation.Data.Screen
+import com.isy_code.navigation.Data.ViewM
 import com.isy_code.navigation.ui.Interface.Scaffold1
 import com.isy_code.navigation.ui.Interface.SplashScreen
 
 @Composable
-fun SetupNavGraph(navController: NavHostController, data:ArrayList<New>, onRefreshAction : () -> Unit){
+fun SetupNavGraph(navController: NavHostController, data:ArrayList<New>, viewM: ViewM){
     NavHost(navController = navController, startDestination = Screen.Splash.route){
         composable(route = Screen.Splash.route){
             SplashScreen(navController)
         }
         composable(route = Screen.Home.route){
-            Scaffold1(data = data, onRefreshAction = {onRefreshAction})
+            Scaffold1(data = data, viewM)
         }
     }
 }
