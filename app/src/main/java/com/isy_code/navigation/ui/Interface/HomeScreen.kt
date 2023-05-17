@@ -20,6 +20,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,16 +49,18 @@ import com.skydoves.landscapist.glide.GlideImage
 @Composable
 fun Scaffold1(data:ArrayList<New>,viewM: ViewM){
     var dialogProperties = DialogProperties()
+    var dataAvailable = viewM.dataAvailable.observeAsState()
+
 
     Scaffold(
         topBar = { MyTopBar(viewM) },
         content = {
-            if(data.isEmpty()){
-                Image(imageVector = Icons.Default.Refresh, contentDescription = "")
-                Text(text = "Something went wrong")
+            if(dataAvailable.value == false){
+                CategoriesScreen(viewM)
+                Image(painter = painterResource(id = R.drawable.no_connection), contentDescription = "", modifier = Modifier.fillMaxSize())
             }else{
                 Column {
-                    CategoriesScreen()
+                    CategoriesScreen(viewM)
                     LazyColumn{
                         items(data){new->
                             content(new = new,dialogProperties)
@@ -79,7 +82,7 @@ fun MyTopBar(viewM: ViewM){
         },
         backgroundColor = Color.White,
         elevation = 0.dp,
-        actions = { IconButton(onClick = { viewM.getData() }) {
+        actions = { IconButton(onClick = { viewM.getAllNews() }) {
             Icon(imageVector = Icons.Default.Refresh, contentDescription ="", modifier = Modifier.padding(horizontal = 3.dp) )
         } }
     )
@@ -88,7 +91,7 @@ fun MyTopBar(viewM: ViewM){
 //Content
 @Composable
 fun content(new: New,dialogProperties: DialogProperties){
-    var showDescription by remember{ mutableStateOf(false) }
+    var dialogShowed by remember{ mutableStateOf(false) }
     Card(
         elevation = 0.dp, modifier = Modifier
             .fillMaxWidth()
@@ -106,93 +109,92 @@ fun content(new: New,dialogProperties: DialogProperties){
                     .padding(end = 10.dp)) {
                     Text(text = new.title, maxLines = 3, fontWeight = FontWeight.Bold, textAlign = TextAlign.Justify)
                     Text(text = new.author, fontStyle = FontStyle.Italic)
-                    Text(text = if(showDescription) "show less" else "show more", color = Scarlet,modifier = Modifier.clickable { showDescription = !showDescription })
+                    Text(text = if(dialogShowed) "show less" else "show more", color = Scarlet,modifier = Modifier.clickable { dialogShowed = !dialogShowed })
                 }
             }
-            /*AnimatedVisibility(visible = showDescription) {
-                Text(text = new.content, color = Color.Black, modifier = Modifier.padding(start = 10.dp, end = 10.dp), textAlign = TextAlign.Justify, fontWeight = FontWeight.Bold)
-            }*/
-            if (showDescription){
-                Dialog(onDismissRequest = { showDescription = !showDescription }, properties = dialogProperties) {
-                    //Icon(imageVector = Icons.Default.Email, contentDescription = "")
-                    //dialogUi(new,showDescription)
-                    //////////////////////////////////////////////
-                    Column(//modifier = Modifier
-                        //.fillMaxWidth()
-                        //.wrapContentHeight()
-                        //.background(Color.White)
-                    ) {
-                        /*Image(painter = painterResource(id = R.drawable.yourname), contentDescription = "", modifier = Modifier
-                            .width(300.dp)
-                            .wrapContentHeight()
-                            .clip(RoundedCornerShape(10.dp)))*/
-                        com.skydoves.landscapist.glide.GlideImage(imageModel = new.imageUrl,contentScale = ContentScale.Crop,modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            //.clip(RoundedCornerShape(10.dp))
-                        )
-                        Text(text = new.title)
-                        Text(text = new.author)
-                        Text(text = new.content)
-                        Box(modifier = Modifier
-                            .wrapContentHeight()
-                            .fillMaxWidth()
-                            .padding(all = 0.dp)){
-                            Button(onClick = { showDescription = !showDescription },modifier = Modifier
-                                .align(Alignment.BottomEnd)
-                                .clip(
-                                    RoundedCornerShape(
-                                        topStart = 30.dp,
-                                        topEnd = 0.dp,
-                                        bottomStart = 0.dp
+            if (dialogShowed){
+                Dialog(onDismissRequest = { dialogShowed = !dialogShowed }, properties = dialogProperties) {
+                    Surface(modifier = Modifier.wrapContentSize(),color = Color.White) {
+                        Column(modifier = Modifier.wrapContentSize()){
+                            com.skydoves.landscapist.glide.GlideImage(imageModel = new.imageUrl,contentScale = ContentScale.Crop,modifier = Modifier
+                                .width(600.dp)
+                                .height(300.dp)
+                                .clip(RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp))
+                            )
+                            Column(modifier = Modifier.padding(start = 10.dp,end = 10.dp,bottom = 10.dp)){
+                                Text(text = new.title,style = MaterialTheme.typography.h5, fontWeight = FontWeight.Bold)
+                                Text(text = new.author, style = MaterialTheme.typography.subtitle1,fontStyle = FontStyle.Italic)
+                                Text(text = new.content, textAlign = TextAlign.Justify,style = MaterialTheme.typography.subtitle2)
+                            }
+                            Box(modifier = Modifier
+                                .wrapContentHeight()
+                                .fillMaxWidth()
+                                .padding(all = 0.dp)){
+                                Button(onClick = {dialogShowed = !dialogShowed},modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .clip(
+                                        RoundedCornerShape(
+                                            topStart = 20.dp,
+                                            topEnd = 20.dp,
+                                            bottomStart = 20.dp,
+                                            bottomEnd = 20.dp
+                                        )
                                     )
-                                ), colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFFF2E00))) {
-                                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "", tint = Color.White)
+                                    .fillMaxWidth(), colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFFF2E00))) {
+                                    Row(){
+                                        //Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "", tint = Color.White)
+                                        Text(text = "Cancel", color = Color.White,style = MaterialTheme.typography.h6)
+                                    }
+                                }
                             }
                         }
                     }
-                    ///////////////////////////////////////////
                 }
             }
         }
     }
 }
 
-//@Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun dialogUi(new:New,state:Boolean){
-    Surface(modifier = Modifier.wrapContentSize()) {
-        Box(modifier = Modifier
-            .width(300.dp)
+fun dialogUi(new: New){
+    Column(modifier = Modifier.wrapContentSize()){
+        com.skydoves.landscapist.glide.GlideImage(imageModel = new.imageUrl,contentScale = ContentScale.Crop,modifier = Modifier
+            .fillMaxWidth()
             .wrapContentHeight()
-            .background(Color.White)) {
-            /*Image(painter = painterResource(id = R.drawable.yourname), contentDescription = "", modifier = Modifier
-                .width(300.dp)
-                .wrapContentHeight()
-                .clip(RoundedCornerShape(10.dp)))*/
-            com.skydoves.landscapist.glide.GlideImage(imageModel = new.imageUrl,contentScale = ContentScale.Crop,modifier = Modifier
-                .width(300.dp)
-                .wrapContentHeight()
-                .clip(RoundedCornerShape(10.dp)))
-            Column(modifier = Modifier.align(Alignment.BottomStart)) {
-                Text(text = new.title)
-                Text(text = new.author)
-                Text(text = new.content)
-                Box(modifier = Modifier
-                    .wrapContentHeight()
-                    .fillMaxWidth()
-                    .padding(all = 0.dp)){
-                    Button(onClick = {},modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .clip(RoundedCornerShape(topStart = 30.dp)), colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFFF2E00))) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "", tint = Color.White)
-                    }
+            .clip(RoundedCornerShape(10.dp))
+        )
+        /*Image(painter = painterResource(id = R.drawable.yourname), contentDescription = "", contentScale = ContentScale.Crop,modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .clip(RoundedCornerShape(10.dp)))*/
+        Column(modifier = Modifier.padding(start = 10.dp,end = 10.dp,bottom = 10.dp)){
+            Text(text = new.title,style = MaterialTheme.typography.h5, fontWeight = FontWeight.Bold)
+            Text(text = new.author, style = MaterialTheme.typography.subtitle1)
+            Text(text = new.content, textAlign = TextAlign.Justify,style = MaterialTheme.typography.caption)
+        }
+        Box(modifier = Modifier
+            .wrapContentHeight()
+            .fillMaxWidth()
+            .padding(all = 0.dp)){
+            Button(onClick = {},modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .clip(
+                    RoundedCornerShape(
+                        topStart = 20.dp,
+                        topEnd = 20.dp,
+                        bottomStart = 20.dp,
+                        bottomEnd = 20.dp
+                    )
+                )
+                .fillMaxWidth(), colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFFF2E00))) {
+                Row(){
+                    //Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "", tint = Color.White)
+                    Text(text = "Cancel", color = Color.White,style = MaterialTheme.typography.h6)
                 }
             }
         }
     }
 }
-
 
 @Composable
 fun contents(){
@@ -213,9 +215,9 @@ fun contents(){
     )
 }
 
-@Preview(showSystemUi = true)
+//@Preview(showSystemUi = true)
 @Composable
-fun CategoriesScreen(){
+fun CategoriesScreen(viewM: ViewM){
     val categories = listOf(
         "all",
         "business",
@@ -230,47 +232,17 @@ fun CategoriesScreen(){
     )
     LazyRow(modifier = Modifier.wrapContentSize()){
         items(categories){categorie->
-            Spacer(modifier = Modifier.size(10.dp))
-            OutlinedButton(onClick = {},) {
-                Text(text = categorie, color = Color(0xFFFF2E00))
+            if(categorie.equals("sports")){
+                Spacer(modifier = Modifier.size(10.dp))
+                OutlinedButton(onClick = { viewM.getSportsNews() },) {
+                    Text(text = categorie, color = Color(0xFFFF2E00))
+                }
+            }else{
+                Spacer(modifier = Modifier.size(10.dp))
+                OutlinedButton(onClick = {},) {
+                    Text(text = categorie, color = Color(0xFFFF2E00))
+                }
             }
         }
     }
 }
-
-/*OutlinedButton(onClick = {}) {
-    Text(text = "all")
-}
-OutlinedButton(onClick = {}) {
-    Text(text = "sports")
-}
-Spacer(modifier = Modifier.size(10.dp))
-OutlinedButton(onClick = {}) {
-    Text(text = "world")
-}
-Spacer(modifier = Modifier.size(10.dp))
-OutlinedButton(onClick = {}) {
-    Text(text = "politics")
-}
-Spacer(modifier = Modifier.size(10.dp))
-OutlinedButton(onClick = {}) {
-    Text(text = "technology")
-}
-Spacer(modifier = Modifier.size(10.dp))
-OutlinedButton(onClick = {}) {
-    Text(text = "startup")
-}
-Spacer(modifier = Modifier.size(10.dp))
-OutlinedButton(onClick = {}) {
-    Text(text = "entertainment")
-}
-Spacer(modifier = Modifier.size(10.dp))
-OutlinedButton(onClick = {}) {
-    Text(text = "science")
-}
-Spacer(modifier = Modifier.size(10.dp))
-OutlinedButton(onClick = {}) {
-    Text(text = "automobile")
-}
-
- */

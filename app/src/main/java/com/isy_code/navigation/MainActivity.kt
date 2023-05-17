@@ -25,9 +25,10 @@ class MainActivity : ComponentActivity(){
         var viewmodel = ViewModelProvider(this).get(ViewM::class.java)
 
         setContent {
-            val result by viewmodel.resultat.observeAsState()
+            val result by viewmodel.livedata.observeAsState()
             val navController = rememberNavController()
-            SetupNavGraph(navController = navController,result?: arrayListOf(),viewmodel)
+            SetupNavGraph(navController = navController,
+                (result?: arrayListOf()) as ArrayList<New>,viewmodel)
             //Scaffold1(result?: arrayListOf(), onRefreshAction = { viewmodel.getData() })
         }
 

@@ -18,48 +18,68 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class ViewM : ViewModel() {
 
-    private val livedata : MutableLiveData<ArrayList<New>> by lazy { MutableLiveData<ArrayList<New>>() }
-    val resultat : LiveData<ArrayList<New>>
-        get() = livedata
+    val livedata : MutableLiveData<MutableList<New>> by lazy { MutableLiveData<MutableList<New>>() }
+    val dataAvailable : MutableLiveData<Boolean> = MutableLiveData<Boolean>(true)
 
-    val data : ArrayList<New> = arrayListOf()
+    var data : MutableList<New> = arrayListOf()
 
     init {
-        getData()
+        getAllNews()
     }
 
-    fun getData(){
+    fun initialiseRetrofitService():MediaStoreNews{
         val retrofit = Retrofit.Builder()
             .baseUrl("https://inshorts.deta.dev/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-
         var new = retrofit.create(MediaStoreNews::class.java);
 
-        var result = new.getNews()
+
+        return new
+    }
+
+    fun getBody(response: Response<JsonObject>){
+        data = arrayListOf()
+        var dataList = response.body()?.get("data")?.asJsonArray?.toList()
+        dataList?.forEach {it
+            var new = New(
+                it.asJsonObject.get("author").asString,
+                it.asJsonObject.get("content").asString,
+                it.asJsonObject.get("imageUrl").asString,
+                it.asJsonObject.get("title").asString
+            )
+            data?.add(new)
+        }
+    }
+
+    fun getAllNews(){
+
+        var result = initialiseRetrofitService().getNews()
 
         result.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if(response!!.isSuccessful){
-                    var new = New(
-                        response.body()?.get("data")?.asJsonArray?.get(0)?.asJsonObject?.get("author")!!.asString,
-                        response.body()?.get("data")?.asJsonArray?.get(0)?.asJsonObject?.get("content")!!.asString,
-                        response.body()?.get("data")?.asJsonArray?.get(0)?.asJsonObject?.get("imageUrl")!!.asString,
-                        response.body()?.get("data")?.asJsonArray?.get(0)?.asJsonObject?.get("title")!!.asString
-                    )
-                    var dataList = response.body()?.get("data")?.asJsonArray?.toList()
-                    dataList?.forEach {it
-                        var new = New(
-                            it.asJsonObject.get("author").asString,
-                            it.asJsonObject.get("content").asString,
-                            it.asJsonObject.get("imageUrl").asString,
-                            it.asJsonObject.get("title").asString
-                        )
-                        data?.add(new)
-                    }
+                    dataAvailable.value = true
+                    getBody(response)
                     livedata.postValue(data)
                 }
             }
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                dataAvailable.value = false
+            }
+        })
+    }
+
+
+    fun getSportsNews(){
+        var result = initialiseRetrofitService().getSportsNews()
+
+        result.enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                getBody(response)
+                livedata.postValue(data)
+            }
+
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {}
         })
     }
