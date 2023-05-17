@@ -163,10 +163,6 @@ fun dialogUi(new: New){
             .wrapContentHeight()
             .clip(RoundedCornerShape(10.dp))
         )
-        /*Image(painter = painterResource(id = R.drawable.yourname), contentDescription = "", contentScale = ContentScale.Crop,modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .clip(RoundedCornerShape(10.dp)))*/
         Column(modifier = Modifier.padding(start = 10.dp,end = 10.dp,bottom = 10.dp)){
             Text(text = new.title,style = MaterialTheme.typography.h5, fontWeight = FontWeight.Bold)
             Text(text = new.author, style = MaterialTheme.typography.subtitle1)
@@ -196,26 +192,7 @@ fun dialogUi(new: New){
     }
 }
 
-@Composable
-fun contents(){
-    Card(
-        elevation = 0.dp, modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 10.dp),
-        content = {
-            Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.SpaceAround){
-                Spacer(modifier = Modifier.size(10.dp))
-                Image(imageVector = Icons.Default.Email, contentDescription = "", modifier = Modifier.size(120.dp))
-                Column {
-                    Text(text = "lsfsdlfkjsdkfjsdflkjsdflsdfkjlsdfkjsdlfkjsdflkjlkjsdflkjsdflkjdsflksdfjlksdfjlksdfjlsdfkjsdlfksjdflksdfjlsdfkjsdflksdfllsdfkljsdklfjklsdjflskldfklsdfmlksdfmlksdmflksdmflksdmflklsdmfkmlk", maxLines = 3, fontStyle = FontStyle.Italic)
-                    Text(text = "lqkesflskefjlskefj")
-                }
-            }
-        }
-    )
-}
 
-//@Preview(showSystemUi = true)
 @Composable
 fun CategoriesScreen(viewM: ViewM){
     val categories = listOf(
@@ -232,15 +209,66 @@ fun CategoriesScreen(viewM: ViewM){
     )
     LazyRow(modifier = Modifier.wrapContentSize()){
         items(categories){categorie->
-            if(categorie.equals("sports")){
-                Spacer(modifier = Modifier.size(10.dp))
-                OutlinedButton(onClick = { viewM.getSportsNews() },) {
-                    Text(text = categorie, color = Color(0xFFFF2E00))
+            when(categorie){
+                "all"->{
+                    Spacer(modifier = Modifier.size(10.dp))
+                    OutlinedButton(onClick = {viewM.getAllNews()},) {
+                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    }
                 }
-            }else{
-                Spacer(modifier = Modifier.size(10.dp))
-                OutlinedButton(onClick = {},) {
-                    Text(text = categorie, color = Color(0xFFFF2E00))
+                "business"->{
+                    Spacer(modifier = Modifier.size(10.dp))
+                    OutlinedButton(onClick = {viewM.getAllNews()},) {
+                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    }
+                }
+                "sports"->{
+                    Spacer(modifier = Modifier.size(10.dp))
+                    OutlinedButton(onClick = {viewM.getSportsNews()},) {
+                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    }
+                }
+                "world"->{
+                    Spacer(modifier = Modifier.size(10.dp))
+                    OutlinedButton(onClick = {viewM.getWorldNews()},) {
+                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    }
+                }
+                "politics"->{
+                    Spacer(modifier = Modifier.size(10.dp))
+                    OutlinedButton(onClick = {viewM.getPoliticsNews()},) {
+                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    }
+                }
+                "technology"->{
+                    Spacer(modifier = Modifier.size(10.dp))
+                    OutlinedButton(onClick = {viewM.getTechnologyNews()},) {
+                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    }
+                }
+                "startup"->{
+                    Spacer(modifier = Modifier.size(10.dp))
+                    OutlinedButton(onClick = {viewM.getStartupNews()},) {
+                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    }
+                }
+                "entertainment"->{
+                    Spacer(modifier = Modifier.size(10.dp))
+                    OutlinedButton(onClick = {viewM.getEntertainmentNews()},) {
+                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    }
+                }
+                "science"->{
+                    Spacer(modifier = Modifier.size(10.dp))
+                    OutlinedButton(onClick = {viewM.getScienceNews()},) {
+                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    }
+                }
+                "automobile"->{
+                    Spacer(modifier = Modifier.size(10.dp))
+                    OutlinedButton(onClick = {viewM.getAutomobileNews()},) {
+                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    }
                 }
             }
         }

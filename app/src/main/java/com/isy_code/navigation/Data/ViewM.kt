@@ -83,4 +83,132 @@ class ViewM : ViewModel() {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {}
         })
     }
+
+    fun getBusinessNews(){
+        var result = initialiseRetrofitService().getBusinessNews()
+
+        result.enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                dataAvailable.value = true
+                getBody(response)
+                livedata.postValue(data)
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                dataAvailable.value = false
+            }
+        })
+    }
+
+    fun getWorldNews(){
+        var result = initialiseRetrofitService().getWorldNews()
+
+        result.enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                dataAvailable.value = true
+                getBody(response)
+                livedata.postValue(data)
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                dataAvailable.value = false
+            }
+        })
+    }
+
+    fun getPoliticsNews(){
+        var result = initialiseRetrofitService().getPoliticsNews()
+
+        result.enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                dataAvailable.value = true
+                getBody(response)
+                livedata.postValue(data)
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                dataAvailable.value = false
+            }
+        })
+    }
+
+    fun getTechnologyNews(){
+        var result = initialiseRetrofitService().getTechnologyNews()
+
+        result.enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                dataAvailable.value = true
+                getBody(response)
+                livedata.postValue(data)
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                dataAvailable.value = false
+            }
+        })
+    }
+
+    fun getStartupNews(){
+        var result = initialiseRetrofitService().getStartupNews()
+
+        result.enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                dataAvailable.value = true
+                getBody(response)
+                livedata.postValue(data)
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                dataAvailable.value = false
+            }
+        })
+    }
+
+    fun getEntertainmentNews(){
+        var result = initialiseRetrofitService().getEntertainmentNews()
+
+        result.enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                dataAvailable.value = true
+                getBody(response)
+                livedata.postValue(data)
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                dataAvailable.value = false
+            }
+        })
+    }
+
+    fun getScienceNews(){
+        var result = initialiseRetrofitService().getScienceNews()
+
+        result.enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                dataAvailable.value = true
+                getBody(response)
+                livedata.postValue(data)
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                dataAvailable.value = false
+            }
+        })
+    }
+
+    fun getAutomobileNews(){
+        var result = initialiseRetrofitService().getAutomobileNews()
+
+        result.enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                dataAvailable.value = true
+                getBody(response)
+                livedata.postValue(data)
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                dataAvailable.value = false
+            }
+        })
+    }
 }
