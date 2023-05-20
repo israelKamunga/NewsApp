@@ -55,12 +55,14 @@ fun Scaffold1(data:ArrayList<New>,viewM: ViewM){
     Scaffold(
         topBar = { MyTopBar(viewM) },
         content = {
+            val categorySelected by viewM.categorySelected.observeAsState()
+
             if(dataAvailable.value == false){
-                CategoriesScreen(viewM)
+                CategoriesScreen(viewM,categorySelected!!)
                 Image(painter = painterResource(id = R.drawable.no_connection), contentDescription = "", modifier = Modifier.fillMaxSize())
             }else{
                 Column {
-                    CategoriesScreen(viewM)
+                    CategoriesScreen(viewM,categorySelected!!)
                     LazyColumn{
                         items(data){new->
                             content(new = new,dialogProperties)
@@ -194,7 +196,7 @@ fun dialogUi(new: New){
 
 
 @Composable
-fun CategoriesScreen(viewM: ViewM){
+fun CategoriesScreen(viewM: ViewM,categorySelected:String){
     val categories = listOf(
         "all",
         "business",
@@ -207,67 +209,107 @@ fun CategoriesScreen(viewM: ViewM){
         "science",
         "automobile"
     )
+
+    var categorySelected = categorySelected
+
     LazyRow(modifier = Modifier.wrapContentSize()){
         items(categories){categorie->
             when(categorie){
                 "all"->{
                     Spacer(modifier = Modifier.size(10.dp))
-                    OutlinedButton(onClick = {viewM.getAllNews()},) {
-                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    OutlinedButton(
+                        onClick = {viewM.getAllNews()
+                        viewM.categorySelected.value = "all"
+                        },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = if (categorySelected.equals("all")) Color.Black else Color.White)) {
+                        Text(text = categorie, color = if(categorySelected.equals("all")) Color.White else Color(0xFFFF2E00))
+
                     }
                 }
                 "business"->{
                     Spacer(modifier = Modifier.size(10.dp))
-                    OutlinedButton(onClick = {viewM.getAllNews()},) {
-                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    OutlinedButton(
+                        onClick = {
+                            viewM.getAllNews()
+                            viewM.categorySelected.value = "business"
+                        },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = if(categorySelected.equals("business")) Color.Black else Color.White)) {
+                        Text(text = categorie, color = if(categorySelected.equals("business")) Color.White else Color(0xFFFF2E00))
                     }
                 }
                 "sports"->{
                     Spacer(modifier = Modifier.size(10.dp))
-                    OutlinedButton(onClick = {viewM.getSportsNews()},) {
-                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    OutlinedButton(
+                        onClick = {
+                            viewM.getSportsNews()
+                            viewM.categorySelected.value = "sports"},
+                        colors = ButtonDefaults.buttonColors(backgroundColor = if(categorySelected.equals("sports"))Color.Black else Color.White)) {
+                        Text(text = categorie, color = if(categorySelected.equals("sports")) Color.White else Color(0xFFFF2E00))
+
                     }
                 }
                 "world"->{
                     Spacer(modifier = Modifier.size(10.dp))
-                    OutlinedButton(onClick = {viewM.getWorldNews()},) {
-                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    OutlinedButton(
+                        onClick = {
+                            viewM.getWorldNews()
+                            viewM.categorySelected.value = "world"
+                                  },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = if(categorySelected.equals("world"))Color.Black else Color.White) ) {
+                        Text(text = categorie, color = if(categorySelected.equals("world")) Color.White else Color(0xFFFF2E00))
                     }
                 }
                 "politics"->{
                     Spacer(modifier = Modifier.size(10.dp))
-                    OutlinedButton(onClick = {viewM.getPoliticsNews()},) {
-                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    OutlinedButton(onClick = {
+                        viewM.getPoliticsNews()
+                        viewM.categorySelected.value = "politics"},colors = ButtonDefaults.buttonColors(backgroundColor = if(categorySelected.equals("politics"))Color.Black else Color.White)) {
+                        Text(text = categorie, color = if(categorySelected.equals("politics")) Color.White else Color(0xFFFF2E00))
+
                     }
                 }
                 "technology"->{
                     Spacer(modifier = Modifier.size(10.dp))
-                    OutlinedButton(onClick = {viewM.getTechnologyNews()},) {
-                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    OutlinedButton(onClick = {
+                        viewM.getTechnologyNews()
+                        viewM.categorySelected.value = "technology"},colors = ButtonDefaults.buttonColors(backgroundColor = if(categorySelected.equals("technology"))Color.Black else Color.White)) {
+                        Text(text = categorie, color = if(categorySelected.equals("technology")) Color.White else Color(0xFFFF2E00))
+
                     }
                 }
                 "startup"->{
                     Spacer(modifier = Modifier.size(10.dp))
-                    OutlinedButton(onClick = {viewM.getStartupNews()},) {
-                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    OutlinedButton(onClick = {
+                        viewM.getStartupNews()
+                        viewM.categorySelected.value = "startup"},colors = ButtonDefaults.buttonColors(backgroundColor = if(categorySelected.equals("startup")) Color.Black else Color.White)) {
+                        Text(text = categorie, color = if(categorySelected.equals("startup")) Color.White else Color(0xFFFF2E00))
+
                     }
                 }
                 "entertainment"->{
                     Spacer(modifier = Modifier.size(10.dp))
-                    OutlinedButton(onClick = {viewM.getEntertainmentNews()},) {
-                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    OutlinedButton(onClick = {
+                        viewM.getEntertainmentNews()
+                        viewM.categorySelected.value = "entertainment"}, colors = ButtonDefaults.buttonColors(backgroundColor = if(categorySelected.equals("entertainment")) Color.Black else Color.White)) {
+                        Text(text = categorie, color = if(categorySelected.equals("entertainment")) Color.White else Color(0xFFFF2E00))
+
                     }
                 }
                 "science"->{
                     Spacer(modifier = Modifier.size(10.dp))
-                    OutlinedButton(onClick = {viewM.getScienceNews()},) {
-                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    OutlinedButton(onClick = {
+                        viewM.getScienceNews()
+                        viewM.categorySelected.value = "science"},colors = ButtonDefaults.buttonColors(backgroundColor = if(categorySelected.equals("science")) Color.Black else Color.White)) {
+                        Text(text = categorie, color = if(categorySelected.equals("science")) Color.White else Color(0xFFFF2E00))
+
                     }
                 }
                 "automobile"->{
                     Spacer(modifier = Modifier.size(10.dp))
-                    OutlinedButton(onClick = {viewM.getAutomobileNews()},) {
-                        Text(text = categorie, color = Color(0xFFFF2E00))
+                    OutlinedButton(onClick = {
+                        viewM.getAutomobileNews()
+                        viewM.categorySelected.value = "automobile"},colors = ButtonDefaults.buttonColors(backgroundColor = if(categorySelected.equals("automobile")) Color.Black else Color.White)) {
+                        Text(text = categorie, color = if(categorySelected.equals("automobile")) Color.White else Color(0xFFFF2E00))
                     }
                 }
             }

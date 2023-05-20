@@ -2,6 +2,10 @@ package com.isy_code.navigation.Data
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,6 +24,8 @@ class ViewM : ViewModel() {
 
     val livedata : MutableLiveData<MutableList<New>> by lazy { MutableLiveData<MutableList<New>>() }
     val dataAvailable : MutableLiveData<Boolean> = MutableLiveData<Boolean>(true)
+
+    val categorySelected = MutableLiveData<String>("")
 
     var data : MutableList<New> = arrayListOf()
 
